@@ -1,4 +1,5 @@
 //introduce variables and objects
+//test edit for git
 PImage mapImage;
 Table locationTable; //this is using the Table object
 Table dataTable; //this is using the Table object
