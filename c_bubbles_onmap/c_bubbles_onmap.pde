@@ -1,26 +1,35 @@
 //introduce variables and objects
-//test edit for git
-PImage mapImage;
+PImage map;
 Table locationTable; //this is using the Table object
 Table dataTable; //this is using the Table object
 int rowCount;
+Circle[] myCircles;
+Circle oneCircle;
+int num = 6;
+float radius = 0;
 float dataMin = MAX_FLOAT;
 float dataMax = MIN_FLOAT;
+int red, green, blue;
 
 //global variables assigned values in drawData()
 float closestDist;
 String closestText;
 float closestTextX;
 float closestTextY;
-boolean on = false;
+int newR, newG, newB;
 
 void setup() {
-  size(640, 400);
-  mapImage = loadImage("oakland_map.png");
+  size(640, 640);
+  map = loadImage("map.jpg");
+  oneCircle = new Circle();
+  myCircles = new Circle[num];
+  for (int i = 0; i<num; i++) {
+    myCircles[i] = new Circle();
+  }
 
   //assign tables to object
-  locationTable = new Table("locations.tsv");  
-  dataTable = new Table("random.tsv");
+  locationTable = new Table("locations2.tsv");  
+  dataTable = new Table("random2.tsv");
 
   // get number of rows and store in a variable called rowCount
   rowCount = locationTable.getRowCount();
@@ -42,11 +51,11 @@ void setup() {
 
 void draw() {
   background(255);
-  image(mapImage, 0, 0);
+  image(map, 0, 0);
 
   closestDist = MAX_FLOAT;
-if(on==true){
-//count through rows of location table, 
+
+  //count through rows of location table, 
   for (int row = 0; row<rowCount; row++) {
     //assign id values to variable called id
     String id = dataTable.getRowName(row);
@@ -55,46 +64,92 @@ if(on==true){
     float y = locationTable.getFloat(id, 2);
     //use the drawData function (written below) to position and visualize
     drawData(x, y, id);
+
+    switch(row) {
+    case 0:  //Home
+      newR = 123;
+      newG = 255;
+      newB = 123;
+      //radius = 73;
+      break;
+    case 1: //School
+      newR = 0;
+      newG = 255;
+      newB = 0;
+      //radius = 29;
+      break; 
+    case 2: //Bus
+      newR = 123;
+      newG = 123;
+      newB = 255;
+      //radius = 2;
+      break;
+    case 3://Restaurant
+      newR = 0;
+      newG = 0;
+      newB = 255;
+      //radius = 6;
+      break;
+    case 4:  //Street
+      newR = 255;
+      newG = 123;
+      newB = 123;
+      //radius = 11;
+      break;
+    case 5:    //Other
+      newR = 255;
+      newG = 0;
+      newB = 0;
+      //radius = 1;
+      break;
+    }
+    
+    myCircles[row].grow(int(radius));
+    myCircles[row].display(x, y, newR, newG, newB);
   }
 
-//if the closestDist variable does not equal the maximum float variable....
+  //myCircles[0].grow();
+  //myCircles[0].display(x,y);
+  //myCircles[0].begin(300,400);
+
+  //if the closestDist variable does not equal the maximum float variable....
   if (closestDist != MAX_FLOAT) {
     fill(0);
     textAlign(CENTER);
     text(closestText, closestTextX, closestTextY);
   }
 }
-}
-void mousePressed(){
- on = true; 
-}
+
 //we write this function to visualize our data 
 // it takes 3 arguments: x, y and id
 void drawData(float x, float y, String id) {
-//value variable equals second field in row
+  //value variable equals second field in row
   float value = dataTable.getFloat(id, 1);
-  float radius = 0;
-//if the value variable holds a float greater than or equal to 0
+  //float radius = 0;
+  //if the value variable holds a float greater than or equal to 0
+
   if (value>=0) {
-    //remap the value to a range between 1.5 and 15
-    radius = map(value, 0, dataMax, 1.5, 15); 
+    //remap the value to a range between 15 and 150
+    radius = map(value, 0, dataMax, 15, 150); 
     //and make it this color
-    fill(#4422CC);
   } else {
     //otherwise, if the number is negative, make it this color.
-    radius = map(value, 0, dataMin, 1.5, 15);
+    radius = map(value, 0, dataMin, 15, 150);
     fill(#FF4422);
   }
   //make a circle at the x and y locations using the radius values assigned above
-  ellipseMode(RADIUS);
-  ellipse(x, y, radius, radius);
+  //ellipseMode(RADIUS); 
+  //ellipse(x, y, radius, radius);
+
+
+
 
   float d = dist(x, y, mouseX, mouseY);
 
-//if the mouse is hovering over circle, show information as text
+  //if the mouse is hovering over circle, show information as text
   if ((d<radius+2) && (d<closestDist)) {
     closestDist = d;
-    String name = dataTable.getString(id, 1);
+    String name = dataTable.getString(id, 2);
     closestText = name +" "+value;
     closestTextX = x;
     closestTextY = y-radius-4;
