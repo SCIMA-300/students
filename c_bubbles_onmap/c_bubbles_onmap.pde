@@ -1,6 +1,11 @@
 //introduce variables and objects
 //test edit for git
 PImage mapImage;
+float s = 29;
+float num = 0, num2 = 55;
+boolean t = false;
+ 
+
 Table locationTable; //this is using the Table object
 Table dataTable; //this is using the Table object
 int rowCount;
@@ -13,6 +18,12 @@ String closestText;
 float closestTextX;
 float closestTextY;
 boolean on = false;
+
+    int m = int(random(255));
+    int n = int(random(255));
+    int o = int(random(255));
+  
+   
 
 void setup() {
   size(640, 400);
@@ -41,8 +52,23 @@ void setup() {
 }
 
 void draw() {
-  background(255);
+  background(150);
   image(mapImage, 0, 0);
+    translate(width/2, height/2);
+    
+  int m = (int)map(mouseX, 0, width, 1, 5);
+  if ((num2%90)==0)t = !t;
+  for (int i = 0; i < 360; i+=72) {
+    for (int q = 0; q < m; q++) {
+      float s2 = q*3;
+      float angle = -(s+s2)+sin(radians(num))*(s+s2);
+      fill(m, n, o);
+      ellipse(sin(radians(i+num-num2))*(s+s2+angle), cos(radians(i+num-num2))*(s+s2+angle), (s)*4, (s)*4);
+    }
+  }
+  if (t)num+=5;
+  num2+=5;
+
 
   closestDist = MAX_FLOAT;
 if(on==true){
@@ -59,7 +85,7 @@ if(on==true){
 
 //if the closestDist variable does not equal the maximum float variable....
   if (closestDist != MAX_FLOAT) {
-    fill(0);
+     fill(m, n, o);
     textAlign(CENTER);
     text(closestText, closestTextX, closestTextY);
   }
@@ -79,15 +105,16 @@ void drawData(float x, float y, String id) {
     //remap the value to a range between 1.5 and 15
     radius = map(value, 0, dataMax, 1.5, 15); 
     //and make it this color
-    fill(#4422CC);
+     fill(m, n, o);
   } else {
     //otherwise, if the number is negative, make it this color.
     radius = map(value, 0, dataMin, 1.5, 15);
-    fill(#FF4422);
+     fill(m, n, o);
   }
   //make a circle at the x and y locations using the radius values assigned above
   ellipseMode(RADIUS);
-  ellipse(x, y, radius, radius);
+   fill(m, o,n);
+  ellipse(x, RADIUS, RADIUS, RADIUS);
 
   float d = dist(x, y, mouseX, mouseY);
 
