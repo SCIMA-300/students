@@ -1,23 +1,28 @@
 //introduce variables and objects
-//test edit for git
 PImage mapImage;
 float s = 29;
-float num = 0, num2 = 55;
+float num1 = 0; 
+float num2 = 55;
 boolean t = false;
  
 
 Table locationTable; //this is using the Table object
 Table dataTable; //this is using the Table object
 int rowCount;
+Circle[] myCircles;
+Circle oneCircle;
+int num = 6;
+float radius = 0;
 float dataMin = MAX_FLOAT;
 float dataMax = MIN_FLOAT;
+int red, green, blue;
+
 
 //global variables assigned values in drawData()
 float closestDist;
 String closestText;
 float closestTextX;
 float closestTextY;
-boolean on = false;
 
     int m = int(random(255));
     int n = int(random(255));
@@ -26,8 +31,13 @@ boolean on = false;
    
 
 void setup() {
-  size(640, 400);
-  mapImage = loadImage("oakland_map.png");
+  size(753, 571);
+  mapImage = loadImage("Aditi_Map2.png");
+  oneCircle = new Circle();
+ myCircles = new Circle[num];
+ for(int i = 0; i<num; i++){
+ myCircles[i] = new Circle();
+ }
 
   //assign tables to object
   locationTable = new Table("locations.tsv");  
@@ -71,7 +81,7 @@ void draw() {
 
 
   closestDist = MAX_FLOAT;
-if(on==true){
+
 //count through rows of location table, 
   for (int row = 0; row<rowCount; row++) {
     //assign id values to variable called id
@@ -81,6 +91,9 @@ if(on==true){
     float y = locationTable.getFloat(id, 2);
     //use the drawData function (written below) to position and visualize
     drawData(x, y, id);
+    
+    myCircles[row].grow(int(radius));
+   myCircles[row].display(x,y, red, green, blue);
   }
 
 //if the closestDist variable does not equal the maximum float variable....
@@ -88,24 +101,34 @@ if(on==true){
      fill(m, n, o);
     textAlign(CENTER);
     text(closestText, closestTextX, closestTextY);
+
+   
+   //myCircles[0].grow();
+   //myCircles[0].display(x,y);
+//myCircles[0].begin(300,400);
+
+//if the closestDist variable does not equal the maximum float variable....
+  if (closestDist != MAX_FLOAT) {
+    fill(0);
+    textAlign(CENTER);
+    text(closestText, closestTextX, closestTextY);
+  
   }
 }
 }
-void mousePressed(){
- on = true; 
-}
 //we write this function to visualize our data 
 // it takes 3 arguments: x, y and id
+
+
 void drawData(float x, float y, String id) {
 //value variable equals second field in row
   float value = dataTable.getFloat(id, 1);
-  float radius = 0;
-//if the value variable holds a float greater than or equal to 0
-  if (value>=0) {
+  
+ if (value>=0) {
     //remap the value to a range between 1.5 and 15
-    radius = map(value, 0, dataMax, 1.5, 15); 
+    radius = map(value, 0, dataMax, 2, 100); 
     //and make it this color
-     fill(m, n, o);
+    fill(m, n, o);
   } else {
     //otherwise, if the number is negative, make it this color.
     radius = map(value, 0, dataMin, 1.5, 15);
